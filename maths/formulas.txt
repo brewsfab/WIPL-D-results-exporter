@@ -1,0 +1,5 @@
+K = \frac{1-|S_{11}|^2-|S_{22}|^2+|S_{11}S_{22}-S_{12}S_{21}|^2}{2|S_{12}S_{21}|} # Rollett's stability factor
+\alpha = \sqrt{\frac{2}{K-1}} #alpha definition from K
+K = 1+\frac{2}{\alpha^2} #K definition from alpha
+\alpha = \sqrt{\frac{2}{K-1}} \hspace{4mm} \mathrm{or} \hspace{4mm} K = 1+\frac{2}{\alpha^2} #alpha and K relation
+\eta_{mac} = K - \sqrt{K^2-1} = 1-\frac{2}{1+\sqrt{1+\alpha^2}} #max achievable efficiency
