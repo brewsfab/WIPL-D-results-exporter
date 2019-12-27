@@ -51,6 +51,12 @@ class parser:
 		# print(to_insert)
 		 # self.file_selected_display. idx,file in enumerate(files_list):
 
+	def computeEfficiency(self, input_file):
+		#start the efficiency calculation
+		renamed_with_efficiency = self.addprefix('eff', input_file)
+		effcalc = efficiencyCalculator(input_file, renamed_with_efficiency, self.current_param_choice)
+		effcalc.calculate_efficiency()
+		effcalc.exportefficiency()
 
 	def parse(self):
 		for file in self.file_in:
@@ -71,19 +77,15 @@ class parser:
 
 			print(self.file_out)
 
-			if file and self.file_out:
+			if file and self.file_out: 
 				resultExporterz = resultExporter(2,file,self.file_out)
 				# resultExporterz.parser([3,4]) #Z-parameters
 				# resultExporterz.parser([5,6]) #S-parameters
 				# resultExporterz.parser([1,2]) #S-parameters
-				resultExporterz.parser(self.parse_item)
-				if self.efficiency_compute.get():
-					print("is selected {}".format(self.efficiency_compute.get()))
-					#start the efficiency calculation
-					renamed_with_efficiency = self.addprefix('eff', self.file_out)
-					effcalc = efficiencyCalculator(self.file_out, renamed_with_efficiency, self.current_param_choice)
-					effcalc.calculate_efficiency()
-					effcalc.exportefficiency()
+				resultExporterz.parser(self.parse_item) #Saved the parsed input to the output csv (self.file_out)
+				if self.efficiency_compute.get(): #If the efficiency calculation is selected
+					self.computeEfficiency(self.file_out)
+
 
 
 	def addprefix(self, prefix, filepath):
