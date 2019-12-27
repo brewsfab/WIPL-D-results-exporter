@@ -2,7 +2,7 @@ class resultExporter:
 	def __init__(self, number_,file_in,*args):
 		self.sep = ","
 		self.new_line = "\n"
-		self.number_el = number_*number_
+		self.number_el = number_*number_ #TODO redefine the number_el
 		if args:
 			self._out = args[0]
 		else:
@@ -31,29 +31,24 @@ class resultExporter:
 			for i in range(self.number_el):
 				#all items
 				current_line = self.handle_in.readline().split()
-				print(current_line)
-				# if not current_line:
-				# 	break
 				if i == 0:
 					line3.append(current_line[0])
-				# print(current_line)
 				lines = current_line[-6:]
 				if items:
 					lines=[el for idx,el in enumerate(lines) if idx+1 in items]
 
-				# print(lines)
 				line3 += lines
-			# print("here{}".format(line3))
 			line_to_write1 = self.sep.join(line1[1:])
 			line_to_write2 = self.sep.join(line2[1:])
 			line_to_write3 = self.sep.join(line3)
 			self.handle_out.write((line_to_write1+self.sep+line_to_write2+self.sep+line_to_write3+self.new_line).replace("NaN","0"))
-			# if not line1:
-			# 	break
-		#close the file handles
-		self.handle_in.close()
-		self.handle_out.close()
 
+		#close the file handles
+		print("File parse reached the end!")
+		self.handle_in.close()
+		print("input file handle closed successfully!")
+		self.handle_out.close()
+		print("output file handle closed successfully!")
 
 
 
