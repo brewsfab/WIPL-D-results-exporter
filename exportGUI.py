@@ -7,6 +7,10 @@ from efficiencyCalculator import efficiencyCalculator
 from pathlib import Path
 
 
+def addprefix(prefix, filepath, extension="csv"):
+	file_path = Path(filepath)
+	return file_path.with_name('{}_{}.{}'.format(prefix,file_path.stem,extension)).as_posix()
+
 class parser:
 	def __init__(self):
 		self.file_in =  ""
@@ -53,7 +57,7 @@ class parser:
 
 	def computeEfficiency(self, input_file):
 		#start the efficiency calculation
-		renamed_with_efficiency = self.addprefix('eff', input_file)
+		renamed_with_efficiency = addprefix('eff', input_file)
 		effcalc = efficiencyCalculator(input_file, renamed_with_efficiency, self.current_param_choice)
 		effcalc.calculate_efficiency()
 		effcalc.exportefficiency()
@@ -61,7 +65,7 @@ class parser:
 	def parse(self):
 		for file in self.file_in:
 			#renamed file
-			renamed_with_param = self.addprefix(self.param_prefix,file)	
+			renamed_with_param = addprefix(self.param_prefix,file)	
 			
 			# Check if a list of file and save automatically to the save folder 
 			# by substituting .ad1 to .csv for the export of the parameter files
@@ -85,12 +89,6 @@ class parser:
 				resultExporterz.parser(self.parse_item) #Saved the parsed input to the output csv (self.file_out)
 				if self.efficiency_compute.get(): #If the efficiency calculation is selected
 					self.computeEfficiency(self.file_out)
-
-
-
-	def addprefix(self, prefix, filepath):
-		file_path = Path(filepath)
-		return file_path.with_name('{}_{}.csv'.format(prefix,file_path.stem)).as_posix()
 
 
 	def getparameterchoice(self):
