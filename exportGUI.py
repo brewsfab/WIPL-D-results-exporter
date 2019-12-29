@@ -96,6 +96,13 @@ class parser:
 		self.parse_item = self.parse_items_dict[self.current_param_choice]
 		self.param_prefix = self.param_prefixs_dict[self.current_param_choice]
 		print(self.current_param_choice)
+		if self.current_param_choice == 3:
+			#disable and gray the efficiency calculation because no formula for Y-parameters
+			self.efficiency_compute.set(FALSE)
+			self.efficiency_check_button.config(state=DISABLED)
+		else:
+			self.efficiency_check_button.config(state=NORMAL)
+		# print("checkbutton state: {}".format(self.efficiency_compute.get()))
 
 
 	def displayit(self):
@@ -107,10 +114,6 @@ class parser:
 
 		self.params_choice = IntVar()
 		self.params_choice.set(self.current_param_choice)
-
-		self.compute_efficiency_choice = IntVar()
-		self.compute_efficiency_choice.set(1) #automatic selection of the efficiency calculation
-
 
 		#creer la frame
 		frame = Frame(window,bg='gray')
@@ -145,9 +148,10 @@ class parser:
 
 
 		self.efficiency_compute = IntVar()
-		Checkbutton(frame, text="compute the efficiency", 
+		self.efficiency_check_button = Checkbutton(frame, text="compute the efficiency", 
 								variable=self.efficiency_compute
-								).pack(fill=X,anchor=W)
+								)
+		self.efficiency_check_button.pack(fill=X,anchor=W)
 		self.efficiency_compute.set(True)
 
 
