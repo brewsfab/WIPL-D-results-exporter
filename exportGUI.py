@@ -62,7 +62,7 @@ class parser:
 		effcalc.calculate_efficiency()
 		effcalc.exportefficiency()
 
-	def parse(self):
+	def process(self):
 		for file in self.file_in:
 			#renamed file
 			renamed_with_param = addprefix(self.param_prefix,file)	
@@ -160,7 +160,7 @@ class parser:
 								font=("Arial",20),
 								bg='white', 
 								fg='gray', 
-								command = self.parse)
+								command = self.process)
 
 		self.file_in_button.pack(pady=25, 
 								fill=X)
