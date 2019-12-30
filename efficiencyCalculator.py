@@ -1,48 +1,41 @@
 import numpy as np
 import pandas as pd
-import cmath
 
 
 class efficiencyCalculator:
 
-	def __init__(self, input_file, output_file, efficiencytype):
-		self.input_file = input_file
+	def __init__(self, dataframe, output_file, relative_sweep_param):
+		#'Z11_real','Z11_imag','Z12_real','Z12_imag','Z21_real','Z21_imag','Z22_real','Z22_imag'
+		#'S11_real','S11_imag','S12_real','S12_imag','S21_real','S21_imag','S22_real','S22_imag'
+		self.dataframe = dataframe.reset_index(drop=True)
 		self.output_file = output_file
-		self.efficiency_dict = {}
-		self.efficiencytype = efficiencytype
+		self.sweep_param = relative_sweep_param
+		self.dataframe_cols = dataframe.columns
 
-		self.processdata()
-
-	def processdata(self):
-		#handling later the error
-		self.dataframe_in = pd.read_csv(self.input_file, header=None)
-		self.nb_of_el = len(self.dataframe_in)
-		self.stepper = 1 #stepper
-		self.first_index = 4 #start of parameter values
+		if "Z11_real" in self.dataframe_cols:
+			self.cols_to_select =['Z11_real','Z11_imag','Z12_real','Z12_imag','Z21_real','Z21_imag','Z22_real','Z22_imag']
+			self.efficiencyFunction = self.efficiencyZparam
+		else:
+			self.cols_to_select =['S11_real','S11_imag','S12_real','S12_imag','S21_real','S21_imag','S22_real','S22_imag']
+			self.efficiencyFunction = self.efficiencySparam
 
 	def calculate_efficiency(self):
-		for i in range(self.nb_of_el):
-			currentline = self.dataframe_in.loc[i]
+		efficiency_dict={}
+		for i in range(len(self.dataframe)):
+			currentline = self.dataframe.loc[i]
 			# step = str(currentline[self.stepper]) #must str from now before finding the way to solve the precision
 
-			step = currentline[self.stepper] #use this now as it seems that for negative values the np.Series works wrong with str()
+			sweep_param = currentline[self.sweep_param]
+			p11= currentline[self.cols_to_select[0]]+1j*currentline[self.cols_to_select[1]]
+			p12= currentline[self.cols_to_select[2]]+1j*currentline[self.cols_to_select[3]]
+			p21= currentline[self.cols_to_select[4]]+1j*currentline[self.cols_to_select[5]]
+			p22= currentline[self.cols_to_select[6]]+1j*currentline[self.cols_to_select[7]]
 
-			p11= currentline[self.first_index]+1j*currentline[self.first_index+1]
-			p12= currentline[self.first_index+2]+1j*currentline[self.first_index+3]
-			p21= currentline[self.first_index+4]+1j*currentline[self.first_index+5]
-			p22= currentline[self.first_index+6]+1j*currentline[self.first_index+7]
+			efficiency_dict.update(((sweep_param, self.efficiencyFunction(p11,p12,p21,p22)),))
 
-			# effmax.append(eff_max*100)
-			if self.efficiencytype == 1:
-				self.efficiency_dict[step] = self.efficiencyZparam(p11,p12,p21,p22)
-			elif self.efficiencytype == 2:
-				self.efficiency_dict[step] = self.efficiencySparam(p11,p12,p21,p22)
-
-
-	def exportefficiency(self):
-		dfout =  pd.Series(self.efficiency_dict).to_frame()
-		dfout.to_csv(self.output_file, header=False)
-
+		#export from here
+		eff_df =  pd.Series(efficiency_dict).to_frame()
+		eff_df.to_csv(self.output_file, header=False)
 
 	def efficiencyZparam(self, *parameters):
 		z11, z12, z21, z22 = parameters

@@ -11,7 +11,7 @@ def addprefix(prefix, filepath, extension="csv"):
 	file_path = Path(filepath)
 	return file_path.with_name('{}_{}.{}'.format(prefix,file_path.stem,extension)).as_posix()
 
-class parser:
+class App:
 	def __init__(self):
 		self.file_in =  ""
 		self.file_out =  ""
@@ -37,7 +37,7 @@ class parser:
 		self.displayfiles(self.file_in)
 
 	def displayfiles(self, files_list):
-		# input_file_display = []
+		
 		for idx, file in enumerate(files_list):
 
 			if not self.current_folder:
@@ -47,20 +47,9 @@ class parser:
 
 			current_file = "{}. {}".format(idx+1,Path(file).name)
 			input_file_list += "\t{}\n".format(current_file)
-		# print(input_file_list)
 		self.message_widget_content.set(input_file_list)
-			# self.file_selected_display.insert(END, current_file)
-		# print(files_list[0])
-		# to_insert = "\n".join(files_list)
-		# print(to_insert)
-		 # self.file_selected_display. idx,file in enumerate(files_list):
 
-	def computeEfficiency(self, input_file):
-		#start the efficiency calculation
-		renamed_with_efficiency = addprefix('eff', input_file)
-		effcalc = efficiencyCalculator(input_file, renamed_with_efficiency, self.current_param_choice)
-		effcalc.calculate_efficiency()
-		effcalc.exportefficiency()
+
 
 	def process(self):
 		for file in self.file_in:
@@ -79,8 +68,6 @@ class parser:
 					initialfile=renamed_with_param,
 					filetypes = [("Comma separated files(csv)","*.csv"),("all files","*.*")])
 
-			print(self.file_out)
-
 			if file and self.file_out: 
 				resultExporterz = resultExporter(2,file,self.file_out)
 				# resultExporterz.parser([3,4]) #Z-parameters
@@ -88,7 +75,10 @@ class parser:
 				# resultExporterz.parser([1,2]) #S-parameters
 				resultExporterz.parser(self.parse_item) #Saved the parsed input to the output csv (self.file_out)
 				if self.efficiency_compute.get(): #If the efficiency calculation is selected
-					self.computeEfficiency(self.file_out)
+					resultExporterz.exporter('mvstep',1)
+				else:
+					resultExporterz.exporter('mvstep',0)
+					# self.computeEfficiency(self.file_out)
 
 
 	def getparameterchoice(self):
@@ -118,7 +108,7 @@ class parser:
 		#creer la frame
 		frame = Frame(window,bg='gray')
 
-		self.label_title = Label(frame,text="WIPL-D result parser", font=("Arial",20),bg='gray', fg='white')
+		self.label_title = Label(frame,text="WIPL-D result exporter", font=("Arial",20),bg='gray', fg='white')
 		self.label_title.pack(expand=YES)
 
 		self.message_widget_content = StringVar()
@@ -172,4 +162,4 @@ class parser:
 
 
 if __name__=="__main__":
-	parser = parser()
+	App = App()
