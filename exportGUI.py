@@ -74,12 +74,43 @@ class App:
 				# resultExporterz.parser([5,6]) #S-parameters
 				# resultExporterz.parser([1,2]) #S-parameters
 				resultExporterz.parser(self.parse_item) #Saved the parsed input to the output csv (self.file_out)
+
+				#After the parsing display the sweep parameters and choose the one to export relative to
+				sweep_param_list = resultExporterz.sweep_params_names
+				if len(sweep_param_list) > 1:
+					print(sweep_param_list)
+					self.display_sweep_selector(sweep_param_list)
+					selected_sweep_param = sweep_param_list[self.sweep_selector_var.get()]
+					print(selected_sweep_param)
 				if self.efficiency_compute.get(): #If the efficiency calculation is selected
-					resultExporterz.exporter('mvstep',1)
+					resultExporterz.exporter(selected_sweep_param,1)
 				else:
-					resultExporterz.exporter('mvstep',0)
+					resultExporterz.exporter(selected_sweep_param,0)
 					# self.computeEfficiency(self.file_out)
 
+	def display_sweep_selector(self, sweep_param_list):
+		print(sweep_param_list)
+		self.sweep_selector_var = IntVar()
+		popup = Toplevel()
+		popup.title("Sweep")
+		Label(popup, text="""Select the relative sweep parameter""",font=("Arial",20),
+				justify=LEFT, padx=20).pack()
+
+		for idx,sweep_param in enumerate(sweep_param_list):
+			Radiobutton(popup, 
+                  text=sweep_param,
+                  padx = 20, 
+                  variable=self.sweep_selector_var, 
+                  command=self.select_sweep_param,
+                  value=idx).pack(anchor=W)#fill=X,anchor=W)
+
+		Button(popup, text="Choose", command=popup.destroy).pack(padx=10,pady=10)
+
+		popup.grab_set()
+		self.window.wait_window(popup)
+
+	def select_sweep_param(self):
+		print("selected is : {}".format(self.sweep_selector_var.get()))
 
 	def getparameterchoice(self):
 		self.current_param_choice = self.params_choice.get()
@@ -92,21 +123,20 @@ class App:
 			self.efficiency_check_button.config(state=DISABLED)
 		else:
 			self.efficiency_check_button.config(state=NORMAL)
-		# print("checkbutton state: {}".format(self.efficiency_compute.get()))
 
 
 	def displayit(self):
-		window = Tk()
-		window.title("WIPL-D Data exporter")
-		window.geometry("300x300")
-		window.minsize(640,600)
-		window.config(background='gray')
+		self.window = Tk()
+		self.window.title("WIPL-D Data exporter")
+		self.window.geometry("300x300")
+		self.window.minsize(640,600)
+		self.window.config(background='gray')
 
 		self.params_choice = IntVar()
 		self.params_choice.set(self.current_param_choice)
 
 		#creer la frame
-		frame = Frame(window,bg='gray')
+		frame = Frame(self.window,bg='gray')
 
 		self.label_title = Label(frame,text="WIPL-D result exporter", font=("Arial",20),bg='gray', fg='white')
 		self.label_title.pack(expand=YES)
@@ -146,7 +176,7 @@ class App:
 
 
 		self.file_in_button = Button(frame,
-								text="Parse", 
+								text="Process", 
 								font=("Arial",20),
 								bg='white', 
 								fg='gray', 
@@ -157,7 +187,7 @@ class App:
 
 		frame.pack(expand=YES)
 		#displays the window
-		window.mainloop()
+		self.window.mainloop()
 
 
 
