@@ -82,6 +82,9 @@ class App:
 					self.display_sweep_selector(sweep_param_list)
 					selected_sweep_param = sweep_param_list[self.sweep_selector_var.get()]
 					print(selected_sweep_param)
+				else:
+					selected_sweep_param = sweep_param_list[0]
+					
 				if self.efficiency_compute.get(): #If the efficiency calculation is selected
 					resultExporterz.exporter(selected_sweep_param,1)
 				else:
