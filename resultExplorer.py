@@ -48,7 +48,7 @@ class resultExporter:
             if not sweep_param in self.sweep_params_names:
                 print("not a valid sweep parameter")
             else:
-                cross = self.sweep_params_names.copy()
+                cross = self.sweep_params_names[:]
                 cross.remove(sweep_param)
 
                 # combination of all the values
