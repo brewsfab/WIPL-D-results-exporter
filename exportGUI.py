@@ -1,5 +1,6 @@
-from tkinter import *
-from tkinter.filedialog import askopenfilenames,asksaveasfilename
+from Tkinter import *
+#from Tkinter.filedialog import askopenfilenames,asksaveasfilename
+from tkFileDialog import askopenfilenames,asksaveasfilename
 
 from resultExplorer import resultExporter
 from efficiencyCalculator import efficiencyCalculator
